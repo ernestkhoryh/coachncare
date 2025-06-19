@@ -1,0 +1,33 @@
+name: Deploy Create React App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Or 'master'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a stable Node.js version compatible with CRA
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build React app
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main' # Only deploy from main branch
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build # CRA builds into the 'build' folder
+          # if you want to publish to a 'gh-pages' branch
+          # publish_branch: gh-pages
